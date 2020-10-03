@@ -1,0 +1,37 @@
+#! groovy
+pipeline {
+  agent {
+    label "kube-m1"
+  }
+  parameters {
+    string(name: "SERVICE_NAME", defaultValue: "itotko-dk", description: "Which service to update")
+    
+    string(name: "IMAGE_NAME", defaultValue: "itotko", description: "Which docker image to deploy")
+
+    string(name: "BUILD_NUMBER", defaultValue: "1", description: "Which build number to deploy")
+  }
+  stages {
+    stage("Update database and configuration") {
+      steps {
+        script {
+          sh "docker service update --replicas 1 --image larskhansen/${params.IMAGE_NAME}:${params.BUILD_NUMBER} update-${params.SERVICE_NAME}"
+        }
+      }
+    }
+    stage("Update service") {
+      steps {
+        script {
+          sh "docker service update --image larskhansen/${params.IMAGE_NAME}:${params.BUILD_NUMBER} ${params.SERVICE_NAME}"
+        }
+      }
+    }
+    stage("Closing the update service") {
+      steps {
+        script {
+          sh "docker service update --replicas 0 update-${params.SERVICE_NAME}"
+        }
+      }
+    }
+  }
+}
+

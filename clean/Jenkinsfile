@@ -1,0 +1,38 @@
+#! groovy
+pipeline {
+  agent none
+  stages {
+    stage('Clean master') {
+      agent {
+        label 'kube-m1'
+      }
+      steps {
+        sh 'docker system prune -a -f'
+      }
+    }
+    stage('Clean slave 1') {
+      agent {
+        label 'kube-s1'
+      }
+      steps {
+        sh 'docker system prune -a -f'
+      }
+    }
+    stage('Clean slave 2') {
+      agent {
+        label 'kube-s2'
+      }
+      steps {
+        sh 'docker system prune -a -f'
+      }
+    }
+    stage('Clean slave 3') {
+      agent {
+        label 'kube-s3'
+      }
+      steps {
+        sh 'docker system prune -a -f'
+      }
+    }
+  }
+}

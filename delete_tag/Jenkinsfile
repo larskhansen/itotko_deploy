@@ -1,0 +1,20 @@
+#! groovy
+pipeline {
+  agent any
+  parameters {
+    string(name: "IMAGE_NAME", defaultValue: "itotko", description: "Which docker image to deploy")
+
+    string(name: "BUILD_NUMBER", defaultValue: "1", description: "Which build number to deploy")
+  }
+  stages {
+    stage("Delete tag") {
+      steps {
+        script {
+          withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
+            sh 'curl -X DELETE -u "$username:$password" https://hub.docker.com/v2/repositories/larskhansen/${IMAGE_NAME}/tags/${BUILD_NUMBER}'
+          }
+        }
+      }
+    }
+  }
+}
