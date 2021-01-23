@@ -18,7 +18,6 @@ pipeline {
         sh 'docker system prune -a -f'
       }
     }
-    /*
     stage('Clean slave 2') {
       agent {
         label 'kube-s2'
@@ -27,7 +26,6 @@ pipeline {
         sh 'docker system prune -a -f'
       }
     }
-    */
     stage('Clean slave 3') {
       agent {
         label 'kube-s3'
